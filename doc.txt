@@ -1,0 +1,105 @@
+
+## 📁 Project Structure
+```
+subscription-service/
+├── src/
+│   ├── controllers/
+│   │   ├── subscriptionController.ts
+│   │   └── planController.ts
+│   ├── models/
+│   │   ├── Subscription.ts
+│   │   └── Plan.ts
+│   ├── middleware/
+│   │   └── auth.ts
+│   ├── routes/
+│   │   ├── subscriptionRoutes.ts
+│   │   └── planRoutes.ts
+│   ├── utils/
+│   │   └── database.ts
+│   ├── types/
+│   │   └── index.ts
+│   └── app.ts
+├── package.json
+├── tsconfig.json
+├── .env.example
+└── README.md
+```
+
+### 3. Create sample plans
+```bash
+curl -X POST http://localhost:3000/api/plans \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "basic",
+    "name": "Basic Plan",
+    "price": 9.99,
+    "features": ["5GB Storage", "Email Support"],
+    "duration": 30
+  }'
+
+curl -X POST http://localhost:3000/api/plans \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "premium",
+    "name": "Premium Plan",
+    "price": 19.99,
+    "features": ["50GB Storage", "Priority Support", "Advanced Features"],
+    "duration": 30
+  }'
+```
+
+### 4. Get authentication token
+```bash
+curl -X POST http://localhost:3000/api/auth/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "user123",
+    "email": "user@example.com"
+  }'
+```
+
+### 5. Test subscription endpoints
+```bash
+# Create subscription
+curl -X POST http://localhost:3000/api/subscriptions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIxMjMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDg0MzkwNTEsImV4cCI6MTc0ODUyNTQ1MX0.YvpyEBvF6u_EDhQpMEWml3tt-55xXZDtdlXQXK784WQ" \
+  -d '{"planId": "basic"}'
+
+# Get subscription
+curl -X GET http://localhost:3000/api/subscriptions/user123 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIxMjMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDg0MzkwNTEsImV4cCI6MTc0ODUyNTQ1MX0.YvpyEBvF6u_EDhQpMEWml3tt-55xXZDtdlXQXK784WQ"
+
+# Update subscription
+curl -X PUT http://localhost:3000/api/subscriptions/user123 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIxMjMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDg0MzkwNTEsImV4cCI6MTc0ODUyNTQ1MX0.YvpyEBvF6u_EDhQpMEWml3tt-55xXZDtdlXQXK784WQ" \
+  -d '{"planId": "premium"}'
+
+# Cancel subscription
+curl -X DELETE http://localhost:3000/api/subscriptions/user123 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIxMjMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDg0MzkwNTEsImV4cCI6MTc0ODUyNTQ1MX0.YvpyEBvF6u_EDhQpMEWml3tt-55xXZDtdlXQXK784WQ"
+```
+
+## 📋 API Endpoints Summary
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/health` | Health check | No |
+| POST | `/api/auth/token` | Generate test token | No |
+| GET | `/api/plans` | Get all plans | No |
+| POST | `/api/plans` | Create plan | No |
+| POST | `/api/subscriptions` | Create subscription | Yes |
+| GET | `/api/subscriptions/{userId}` | Get subscription | Yes |
+| PUT | `/api/subscriptions/{userId}` | Update subscription | Yes |
+| DELETE | `/api/subscriptions/{userId}` | Cancel subscription | Yes |
+
+## 🔒 Security Features
+- JWT authentication
+- Rate limiting (100 requests per 15 minutes)
+- Helmet.js for security headers
+- CORS enabled
+- Input validation
+- Error handling
+
+
